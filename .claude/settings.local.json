@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "PowerShell(Get-Command *)",
-      "PowerShell(winget install *)"
+      "PowerShell(winget install *)",
+      "Bash(grep -E \"\\(target/|\\\\.env$\\)\")"
     ]
   }
 }
