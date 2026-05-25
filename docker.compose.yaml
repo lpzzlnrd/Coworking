@@ -31,5 +31,20 @@ services:
     ports:
       - "8001:8000"
 
+  billing-service:
+    build:
+      context: ./services/billing-service
+      dockerfile: .dockerfile
+    environment:
+      BILLING_DATABASE_URL: jdbc:postgresql://db:5432/role_manage
+      BILLING_DB_USER: role
+      BILLING_DB_PASSWORD: role
+      PORT: 8002
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8002:8002"
+
 volumes:
   role_manage_db:
