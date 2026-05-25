@@ -20,4 +20,10 @@ pub enum DomainError {
 
     #[error("el usuario no tiene permiso para esta operación")]
     Forbidden,
+
+    // Internal cubre fallos no recuperables del dominio: DB caída, HTTP roto,
+    // serialización corrupta. El handler debe mapearlo a 500 sin filtrar el
+    // detalle al cliente (se loguea, pero al usuario solo "internal error").
+    #[error("error interno: {0}")]
+    Internal(String),
 }
