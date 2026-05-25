@@ -1,7 +1,10 @@
 -- ============================================================================
 -- checking-service · initial schema (modo simple: todo en `public`)
--- Las extensiones uuid-ossp y btree_gist deben estar habilitadas en la DB.
 -- ============================================================================
+
+-- Habilitar extensiones necesarias
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "btree_gist";
 
 -- ---------------------------------------------------------------------------
 -- Enums
