@@ -1,47 +1,47 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import AuthLayout from "../components/AuthLayout";
-import OtpInput from "../components/OtpInput";
-import { authService } from "../services/auth";
-import { toast } from "sonner";
-import { Loader2, ArrowLeft } from "lucide-react";
 
-type Step = "credentials" | "otp";
+import AuthLayout from "../components/AuthLayout";
+import { authService } from "../services/auth";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState<Step>("credentials");
+  const [mode, setMode] = useState<"login" | "register">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
-    setLoading(true);
-    try {
-      await authService.login(email, password);
-      setStep("otp");
-      toast.success("Código enviado");
-    } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : "Error al iniciar sesión");
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const handleOtp = async (code: string) => {
-    const sessionId = localStorage.getItem("session_id");
-    if (!sessionId) return;
     setLoading(true);
+
     try {
-      await authService.verifyOtp(sessionId, code);
-      toast.success("Bienvenido");
-      navigate("/");
-    } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : "Código inválido");
+      if (mode === "register") {
+        await authService.register(email, password, fullName);
+        toast.success("Cuenta creada. Ahora puedes iniciar sesión");
+        setMode("login");
+        setPassword("");
+      } else {
+        await authService.login(email, password);
+        toast.success("Bienvenido");
+        navigate("/", { replace: true });
+      }
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : mode === "login"
+            ? "Error al iniciar sesión"
+            : "Error al crear la cuenta",
+      );
     } finally {
       setLoading(false);
     }
@@ -49,63 +49,72 @@ const LoginPage = () => {
 
   return (
     <AuthLayout
-      title={step === "credentials" ? "Iniciar sesión" : "Verificación"}
+      title={mode === "login" ? "Iniciar sesión" : "Crear cuenta"}
       subtitle={
-        step === "credentials"
-          ? "Ingresa tus credenciales"
-          : `Código enviado a su Numero de telefono registrado.`
+        mode === "login"
+          ? "Usa el flujo JWT real del servicio FastAPI"
+          : "Este formulario crea usuarios en role-manage"
       }
     >
-      {step === "credentials" ? (
-        <form onSubmit={handleLogin} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {mode === "register" && (
           <Input
-            type="email"
-            placeholder="Correo electrónico"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            placeholder="Nombre completo"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
             className="bg-input border-border h-11 placeholder:text-muted-foreground"
-            required
           />
-          <Input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="bg-input border-border h-11 placeholder:text-muted-foreground"
-            required
-          />
-          <Button
-            type="submit"
-            className="w-full h-11 font-heading font-medium text-sm"
-            disabled={loading}
-          >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Continuar"}
-          </Button>
-          <button
-            type="button"
-            onClick={() => navigate("/recover")}
-            className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors pt-1"
-          >
-            ¿Olvidaste tu contraseña?
-          </button>
-        </form>
-      ) : (
-        <div className="space-y-6">
-          <OtpInput onComplete={handleOtp} disabled={loading} />
-          {loading && (
-            <div className="flex justify-center">
-              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-            </div>
+        )}
+
+        <Input
+          type="email"
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="bg-input border-border h-11 placeholder:text-muted-foreground"
+          required
+        />
+        <Input
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="bg-input border-border h-11 placeholder:text-muted-foreground"
+          required
+          minLength={8}
+        />
+
+        <Button
+          type="submit"
+          className="w-full h-11 font-heading font-medium text-sm"
+          disabled={loading}
+        >
+          {loading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : mode === "login" ? (
+            "Entrar"
+          ) : (
+            "Registrarme"
           )}
-          <button
-            type="button"
-            onClick={() => setStep("credentials")}
-            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mx-auto"
-          >
-            <ArrowLeft className="h-3 w-3" /> Volver
-          </button>
-        </div>
-      )}
+        </Button>
+
+        <button
+          type="button"
+          onClick={() => setMode((current) => (current === "login" ? "register" : "login"))}
+          className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors pt-1"
+        >
+          {mode === "login" ? "¿No tienes cuenta? Crear una" : "Ya tengo cuenta"}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => navigate("/recover")}
+          className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Recuperación de contraseña
+        </button>
+      </form>
     </AuthLayout>
   );
 };
