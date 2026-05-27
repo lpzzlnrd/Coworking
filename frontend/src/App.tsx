@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import LoginPage from "./frontend/pages/LoginPage";
 import RecoverPage from "./frontend/pages/RecoverPage";
+import RolesPage from "./frontend/pages/RolesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -19,6 +20,7 @@ const App = () => (
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/recover" element={<RecoverPage />} />
+          <Route path="/roles" element={<RolesPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
