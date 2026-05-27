@@ -3,8 +3,11 @@ use std::sync::Arc;
 use anyhow::Context;
 use checking_service::api::router::build_router;
 use checking_service::api::state::AppState;
+use checking_service::application::reservation_service::ReservationService;
 use checking_service::config::Settings;
 use checking_service::infrastructure::db::pool::build_pool;
+use checking_service::infrastructure::db::postgres_reservation_repo::PostgresReservationRepo;
+use checking_service::infrastructure::http::auth_client::AuthClient;
 use tokio::net::TcpListener;
 use tokio::signal;
 use tracing_subscriber::{EnvFilter, fmt};
@@ -19,8 +22,7 @@ async fn main() -> anyhow::Result<()> {
         .with_target(false)
         .init();
 
-    let settings = Settings::from_env().context("loading settings from environment")?;
-    let settings = Arc::new(settings);
+    let settings = Arc::new(Settings::from_env().context("loading settings from environment")?);
 
     let pool = build_pool(&settings.database_url, settings.database_max_connections)
         .await
@@ -33,9 +35,16 @@ async fn main() -> anyhow::Result<()> {
         .await
         .context("running migrations")?;
 
+    // Composición de dependencias (composition root): aquí —y solo aquí— se eligen
+    // las implementaciones concretas de los puertos. El resto del código solo ve traits.
+    let repo = Arc::new(PostgresReservationRepo::new(pool.clone()));
+    let auth = Arc::new(AuthClient::new(settings.auth_service_url.clone()));
+    let reservations = Arc::new(ReservationService::new(repo, auth));
+
     let state = AppState {
         pool,
         settings: settings.clone(),
+        reservations,
     };
 
     let app = build_router(state);
