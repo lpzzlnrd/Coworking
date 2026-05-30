@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => ({
       '/api': {
         target: process.env.API_TARGET || 'http://localhost:8001',
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
     hmr: {

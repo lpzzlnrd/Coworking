@@ -46,5 +46,17 @@ services:
     ports:
       - "8002:8002"
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      API_TARGET: http://role-manage:8000
+    depends_on:
+      - role-manage
+      - billing-service
+    ports:
+      - "8080:8080"
+
 volumes:
   role_manage_db:
