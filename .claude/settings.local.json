@@ -10,7 +10,9 @@
       "Bash(mkdir -p ~/.claude/skills/checking-service-bootstrap)",
       "Bash(cp \"/c/Users/leoco/OneDrive/Desktop/SKILL.md\" ~/.claude/skills/checking-service-bootstrap/SKILL.md)",
       "PowerShell(Test-Path *)",
-      "PowerShell(Get-Process *)"
+      "PowerShell(Get-Process *)",
+      "Bash(cargo test *)",
+      "PowerShell(head *)"
     ]
   }
 }
