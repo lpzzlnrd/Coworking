@@ -19,6 +19,9 @@ export default defineConfig(({ mode }) => ({
     },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  define: {
+    'import.meta.env.VITE_SERVICE_TYPE': JSON.stringify(process.env.SERVICE_TYPE || 'role-manage'),
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

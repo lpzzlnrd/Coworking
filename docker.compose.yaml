@@ -46,5 +46,68 @@ services:
     ports:
       - "8002:8002"
 
+  checking-service:
+    build:
+      context: ./services/checking-service
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgres://role:role@db:5432/role_manage
+      DATABASE_MAX_CONNECTIONS: 10
+      SERVER_PORT: 3000
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me}
+      AUTH_SERVICE_URL: http://role-manage:8000
+    depends_on:
+      db:
+        condition: service_healthy
+      role-manage:
+        condition: service_started
+    ports:
+      - "8080:3000"
+
+  frontend-role-manage:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      API_TARGET: http://role-manage:8000
+      SERVICE_TYPE: role-manage
+    ports:
+      - "5173:8080"
+    depends_on:
+      role-manage:
+        condition: service_started
+      db:
+        condition: service_healthy
+
+  frontend-billing-service:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      API_TARGET: http://billing-service:8002
+      SERVICE_TYPE: billing-service
+    ports:
+      - "5174:8080"
+    depends_on:
+      billing-service:
+        condition: service_started
+      db:
+        condition: service_healthy
+
+  frontend-checking-service:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      API_TARGET: http://checking-service:3000
+      SERVICE_TYPE: checking-service
+    ports:
+      - "5175:8080"
+    depends_on:
+      checking-service:
+        condition: service_started
+      db:
+        condition: service_healthy
+
 volumes:
   role_manage_db:
