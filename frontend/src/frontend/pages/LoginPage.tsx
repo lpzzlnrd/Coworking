@@ -47,13 +47,24 @@ const LoginPage = () => {
     }
   };
 
+  const getBackendName = () => {
+    const serviceType = import.meta.env.VITE_SERVICE_TYPE || 'role-manage';
+    switch (serviceType) {
+      case 'billing-service': return 'Billing Service (Node.js)';
+      case 'checking-service': return 'Checking Service (Rust/Axum)';
+      case 'role-manage':
+      default:
+        return 'Role Manage (Python/FastAPI)';
+    }
+  };
+
   return (
     <AuthLayout
       title={mode === "login" ? "Iniciar sesión" : "Crear cuenta"}
       subtitle={
         mode === "login"
-          ? "Usa el flujo JWT real del servicio FastAPI"
-          : "Este formulario crea usuarios en role-manage"
+          ? `Usa el flujo JWT real del servicio ${getBackendName()}`
+          : `Este formulario crea usuarios en ${getBackendName()}`
       }
     >
       <form onSubmit={handleSubmit} className="space-y-4">

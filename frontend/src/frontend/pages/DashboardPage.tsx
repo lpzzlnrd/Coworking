@@ -38,9 +38,20 @@ const DashboardPage = () => {
     navigate("/login", { replace: true });
   };
 
+  const getBackendName = () => {
+    const serviceType = import.meta.env.VITE_SERVICE_TYPE || 'role-manage';
+    switch (serviceType) {
+      case 'billing-service': return 'Billing Service (Node.js)';
+      case 'checking-service': return 'Checking Service (Rust/Axum)';
+      case 'role-manage':
+      default:
+        return 'Role Manage (Python/FastAPI)';
+    }
+  };
+
   if (loading) {
     return (
-      <AuthLayout title="Cargando sesión" subtitle="Validando el token con FastAPI">
+      <AuthLayout title="Cargando sesión" subtitle={`Validando el token con ${getBackendName()}`}>
         <div className="flex justify-center py-8">
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
@@ -51,7 +62,7 @@ const DashboardPage = () => {
   return (
     <AuthLayout
       title="Sesión activa"
-      subtitle="El frontend ya está autenticando contra role-manage"
+      subtitle={`El frontend ya está autenticando contra ${getBackendName()}`}
     >
       {user && (
         <div className="space-y-4 rounded-lg border border-border bg-card p-5 text-sm">
