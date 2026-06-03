@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+**/node_modules/
 /.pnp
 .pnp.js
 
@@ -23,6 +24,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+**/__pycache__/
+**/*.pyc
+**/.venv/
 
 # local env files
 .env*.local
