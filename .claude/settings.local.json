@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-Command *)",
+      "PowerShell(winget install *)",
+      "Bash(grep -E \"\\(target/|\\\\.env$\\)\")",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\leoco\\\\Coworking\\\\services\\\\checking-service\" -Force | Select-Object Mode,Name; \"---\"; Get-ChildItem -Path \"c:\\\\Users\\\\leoco\\\\Coworking\\\\services\\\\checking-service\\\\src\" -Recurse -File | Select-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\leoco\\\\Coworking\\\\services\\\\checking-service\\\\src\" -Recurse -Force; \"---\"; Get-Content \"c:\\\\Users\\\\leoco\\\\Coworking\\\\services\\\\checking-service\\\\.env\")",
+      "PowerShell(cargo install sqlx-cli --no-default-features --features rustls,postgres)",
+      "Bash(mkdir -p ~/.claude/skills/checking-service-bootstrap)",
+      "Bash(cp \"/c/Users/leoco/OneDrive/Desktop/SKILL.md\" ~/.claude/skills/checking-service-bootstrap/SKILL.md)",
+      "PowerShell(Test-Path *)",
+      "PowerShell(Get-Process *)",
+      "Bash(cargo test *)",
+      "PowerShell(head *)",
+      "Bash(python -c ' *)"
+    ]
+  }
+}
