@@ -1,14 +1,14 @@
 import os
 from collections.abc import AsyncIterator
 
+import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy import select
+from sqlalchemy import select, text
+
 from app.models.user import Role, User
 
-# Point the app at the TEST database BEFORE importing anything from app.*
 TEST_DATABASE_URL = os.environ.get(
     "TEST_DATABASE_URL",
     "postgresql+asyncpg://role:role@localhost:5432/role_manage_test",
@@ -21,13 +21,11 @@ from app.db import get_session         # noqa: E402
 from app.main import create_app        # noqa: E402
 from app.models.base import Base       # noqa: E402
 
-# settings is @lru_cache'd; reset so it picks up TEST_DATABASE_URL
 get_settings.cache_clear()
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(loop_scope="function")
 async def engine():
-    """One engine per test session, bound to role_manage_test."""
     eng = create_async_engine(TEST_DATABASE_URL, future=True)
     async with eng.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
@@ -38,25 +36,15 @@ async def engine():
     await eng.dispose()
 
 
-@pytest_asyncio.fixture(autouse=True)
-async def clean_db(engine):
-    """Wipe data + reset identities before each test. Schema stays."""
-    async with engine.begin() as conn:
-        tables = ", ".join(f'"{t.name}"' for t in reversed(Base.metadata.sorted_tables))
-        await conn.execute(text(f"TRUNCATE TABLE {tables} RESTART IDENTITY CASCADE"))
-    yield
-
-
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture(loop_scope="function")
 async def session(engine) -> AsyncIterator[AsyncSession]:
     SessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False)
     async with SessionLocal() as s:
         yield s
 
 
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture(loop_scope="function")
 async def client(engine) -> AsyncIterator[AsyncClient]:
-    """httpx client with get_session overridden to use the test engine."""
     SessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False)
 
     async def _override_get_session() -> AsyncIterator[AsyncSession]:
@@ -72,9 +60,9 @@ async def client(engine) -> AsyncIterator[AsyncClient]:
 
     app.dependency_overrides.clear()
 
-@pytest_asyncio.fixture
+
+@pytest_asyncio.fixture(loop_scope="function")
 async def admin_token(client, engine):
-    """Register a user, promote to admin in the test DB, return a bearer token."""
     await client.post(
         "/auth/register",
         json={"email": "admin@example.com", "password": "hunter22!"},
