@@ -42,3 +42,4 @@ next-env.d.ts
 
  *.target
  .claude/settings.local.json
+FRONTEND_SETUP.md
