@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=DM+Sans:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,47 +6,60 @@
 
 @layer base {
   :root {
-    --background: 220 16% 8%;
-    --foreground: 220 10% 82%;
+    /* Custom theme RGB tokens */
+    --paper: 245 241 234;
+    --paper-deep: 255 255 255;
+    --paper-elevated: 251 249 245;
+    --paper-muted: 225 218 207;
+    --ink: 28 25 23;
+    --ink-soft: 87 83 78;
+    --ink-faint: 168 162 158;
+    --coral: 196 75 50;
+    --rose: 190 62 72;
 
-    --card: 220 14% 11%;
-    --card-foreground: 220 10% 82%;
+    /* Shadcn standard tokens mapped to custom theme HSL colors */
+    --background: 38 27% 94%;       /* --paper */
+    --foreground: 24 10% 10%;       /* --ink */
 
-    --popover: 220 14% 11%;
-    --popover-foreground: 220 10% 82%;
+    --card: 0 0% 100%;              /* --paper-deep */
+    --card-foreground: 24 10% 10%;  /* --ink */
 
-    --primary: 220 10% 82%;
-    --primary-foreground: 220 16% 8%;
+    --popover: 0 0% 100%;           /* --paper-deep */
+    --popover-foreground: 24 10% 10%;/* --ink */
 
-    --secondary: 220 12% 14%;
-    --secondary-foreground: 220 10% 65%;
+    --primary: 10 59% 48%;          /* --coral */
+    --primary-foreground: 0 0% 100%;/* --paper-deep */
 
-    --muted: 220 10% 16%;
-    --muted-foreground: 220 8% 42%;
+    --secondary: 40 30% 97%;        /* --paper-elevated */
+    --secondary-foreground: 33 5% 32%;/* --ink-soft */
 
-    --accent: 160 25% 45%;
-    --accent-foreground: 220 16% 8%;
+    --muted: 39 24% 85%;            /* --paper-muted */
+    --muted-foreground: 33 5% 32%;  /* --ink-soft */
 
-    --destructive: 0 40% 48%;
-    --destructive-foreground: 0 0% 95%;
+    --accent: 10 59% 48%;           /* --coral */
+    --accent-foreground: 0 0% 100%; /* --paper-deep */
 
-    --border: 220 10% 16%;
-    --input: 220 12% 13%;
-    --ring: 220 8% 35%;
+    --destructive: 355 51% 49%;     /* --rose */
+    --destructive-foreground: 0 0% 100%;/* --paper-deep */
 
-    --radius: 0.5rem;
+    --border: 39 24% 85%;           /* --paper-muted */
+    --input: 40 30% 97%;            /* --paper-elevated */
+    --ring: 10 59% 48%;             /* --coral */
 
-    --font-heading: 'Space Grotesk', sans-serif;
-    --font-body: 'DM Sans', sans-serif;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --font-heading: 'Fraunces', serif;
+    --font-body: 'IBM Plex Sans', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+
+    --sidebar-background: 38 27% 94%;
+    --sidebar-foreground: 24 10% 10%;
+    --sidebar-primary: 10 59% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 40 30% 97%;
+    --sidebar-accent-foreground: 24 10% 10%;
+    --sidebar-border: 39 24% 85%;
+    --sidebar-ring: 10 59% 48%;
   }
 }
 

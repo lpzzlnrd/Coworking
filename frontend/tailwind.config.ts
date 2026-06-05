@@ -13,11 +13,21 @@ export default {
       },
     },
     fontFamily: {
-      heading: ['Space Grotesk', 'sans-serif'],
-      body: ['DM Sans', 'sans-serif'],
+      heading: ['Fraunces', 'serif'],
+      body: ['"IBM Plex Sans"', 'sans-serif'],
+      mono: ['"IBM Plex Mono"', 'monospace'],
     },
     extend: {
       colors: {
+        paper: "rgb(var(--paper) / <alpha-value>)",
+        "paper-deep": "rgb(var(--paper-deep) / <alpha-value>)",
+        "paper-elevated": "rgb(var(--paper-elevated) / <alpha-value>)",
+        "paper-muted": "rgb(var(--paper-muted) / <alpha-value>)",
+        ink: "rgb(var(--ink) / <alpha-value>)",
+        "ink-soft": "rgb(var(--ink-soft) / <alpha-value>)",
+        "ink-faint": "rgb(var(--ink-faint) / <alpha-value>)",
+        coral: "rgb(var(--coral) / <alpha-value>)",
+        rose: "rgb(var(--rose) / <alpha-value>)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

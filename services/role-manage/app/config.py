@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     JWT_SECRET: str = Field(default="change-me-in-prod", min_length=8)
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TTL_SECONDS: int = 900
+    JWT_ISSUER: str = "coworking-auth"
 
     CORS_ALLOWED_ORIGINS: list[str] = ["http://localhost:5173"]
 

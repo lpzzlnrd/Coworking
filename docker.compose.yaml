@@ -9,6 +9,7 @@ services:
       - "5432:5432"
     volumes:
       - role_manage_db:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U role -d role_manage"]
       interval: 5s
@@ -19,6 +20,7 @@ services:
     build:
       context: ./services/role-manage
       dockerfile: .dockerfile
+    command: sh -c "uv run alembic upgrade head && uv run uvicorn app.main:app --host 0.0.0.0 --port 8000"
     environment:
       DATABASE_URL: postgresql+asyncpg://role:role@db:5432/role_manage
       JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me}
@@ -36,7 +38,7 @@ services:
       context: ./services/billing-service
       dockerfile: .dockerfile
     environment:
-      BILLING_DATABASE_URL: jdbc:postgresql://db:5432/role_manage
+      BILLING_DATABASE_URL: jdbc:postgresql://db:5432/billing
       BILLING_DB_USER: role
       BILLING_DB_PASSWORD: role
       PORT: 8002
@@ -51,7 +53,7 @@ services:
       context: ./services/checking-service
       dockerfile: Dockerfile
     environment:
-      DATABASE_URL: postgres://role:role@db:5432/role_manage
+      DATABASE_URL: postgres://role:role@db:5432/checking
       DATABASE_MAX_CONNECTIONS: 10
       SERVER_PORT: 3000
       JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me}

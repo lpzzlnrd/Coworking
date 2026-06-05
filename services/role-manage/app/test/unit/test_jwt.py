@@ -11,6 +11,7 @@ def test_encode_decode_roundtrip():
 
     assert payload["sub"] == "user-1"
     assert payload["role"] == "admin"
+    assert payload["iss"] == settings.JWT_ISSUER
     assert payload["exp"] - payload["iat"] == ttl
 
 

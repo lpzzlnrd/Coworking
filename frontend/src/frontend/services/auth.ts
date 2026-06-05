@@ -79,6 +79,10 @@ export const authService = {
     return request<AuthUser>("/auth/me", { method: "GET" }, true);
   },
 
+  async listUsers() {
+    return request<AuthUser[]>("/users", { method: "GET" }, true);
+  },
+
   logout() {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
   },

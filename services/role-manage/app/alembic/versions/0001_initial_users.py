@@ -23,8 +23,6 @@ user_role_enum = sa.Enum(
 
 
 def upgrade() -> None:
-    user_role_enum.create(op.get_bind(), checkfirst=True)
-
     op.create_table(
         "users",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
@@ -35,7 +33,6 @@ def upgrade() -> None:
             "role",
             sa.Enum(
                 "admin", "staff", "member", "guest", name="user_role", native_enum=True,
-                create_type=False,
             ),
             nullable=False,
             server_default="member",

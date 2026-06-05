@@ -20,6 +20,7 @@ def encode_access_token(sub: str, role: str, ttl_seconds: int | None = None) -> 
         "role": role,
         "iat": int(now.timestamp()),
         "exp": int(exp.timestamp()),
+        "iss": settings.JWT_ISSUER,
     }
     token = jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
     return token, ttl

@@ -38,7 +38,7 @@ async fn main() -> anyhow::Result<()> {
     // Composición de dependencias (composition root): aquí —y solo aquí— se eligen
     // las implementaciones concretas de los puertos. El resto del código solo ve traits.
     let repo = Arc::new(PostgresReservationRepo::new(pool.clone()));
-    let auth = Arc::new(AuthClient::new(settings.auth_service_url.clone()));
+    let auth = Arc::new(AuthClient::new(settings.auth_service_url.clone(), pool.clone()));
     let reservations = Arc::new(ReservationService::new(repo, auth));
 
     let state = AppState {
