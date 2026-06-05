@@ -19,6 +19,30 @@ def create_app() -> FastAPI:
     app.include_router(auth.router)
     app.include_router(users.router)
 
+    @app.on_event("startup")
+    async def seed_admin():
+        from app.db import AsyncSessionLocal
+        from app.models.user import User, Role
+        from app.security.passwords import hash_password
+        from sqlalchemy import select
+
+        async with AsyncSessionLocal() as session:
+            # Check if there is already an admin
+            result = await session.execute(select(User).where(User.role == Role.admin))
+            admin = result.scalar_one_or_none()
+            if not admin:
+                # Seed default admin user
+                admin = User(
+                    email="admin@coworking.com",
+                    password_hash=hash_password("admin123"),
+                    full_name="Admin Principal",
+                    role=Role.admin,
+                    is_active=True
+                )
+                session.add(admin)
+                await session.commit()
+                print("--- DEFAULT ADMIN SEEDED: admin@coworking.com / admin123 ---")
+
     @app.get("/health", tags=["meta"])
     async def health() -> dict:
         return {"status": "ok", "service": settings.APP_NAME, "env": settings.APP_ENV}
