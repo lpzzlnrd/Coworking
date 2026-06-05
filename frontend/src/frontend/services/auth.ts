@@ -83,6 +83,14 @@ export const authService = {
     return request<AuthUser[]>("/users", { method: "GET" }, true);
   },
 
+  async updateUserRole(userId: string, role: string) {
+    return request<AuthUser>(`/users/${userId}/role`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role }),
+    }, true);
+  },
+
   logout() {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
   },

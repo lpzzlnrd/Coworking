@@ -29,7 +29,7 @@ def create_app() -> FastAPI:
         async with AsyncSessionLocal() as session:
             # Check if there is already an admin
             result = await session.execute(select(User).where(User.role == Role.admin))
-            admin = result.scalar_one_or_none()
+            admin = result.scalars().first()
             if not admin:
                 # Seed default admin user
                 admin = User(
